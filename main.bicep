@@ -1,12 +1,12 @@
 param location string = 'westeurope'
 
-param adminUsername string = 'admjbp'
+param adminUsername string
 @secure()
 param adminpassword string
 param keyData string
 @secure()
 param privateKeyData string
-param objectID string = '57dfab0a-db05-49d3-bbbd-415effcd6a9b'
+param userID string
 
 module logAnalyticsWorkspace '../ResourceModules/modules/Microsoft.OperationalInsights/workspaces/deploy.bicep' = {
   name: '${uniqueString(deployment().name)}-logAnalytics-Workspace'
@@ -406,7 +406,7 @@ module vaults '../ResourceModules/modules/Microsoft.KeyVault/vaults/deploy.bicep
     roleAssignments: [
       {
         principalIds: [
-          objectID
+          userID
         ]
         principalType: 'User'
         roleDefinitionIdOrName: 'Key Vault Secrets User'

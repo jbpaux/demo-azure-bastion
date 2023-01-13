@@ -1,7 +1,7 @@
 
 # Azure Bastion Demo
 
-Small project to demonstrate Azure Bastion capbilities
+Small project to demonstrate Azure Bastion capabilities
 
 ## Content
 
@@ -13,10 +13,12 @@ Small project to demonstrate Azure Bastion capbilities
 
 ## How to use
 
-1. Clone the repo
+1. Clone the repo and the [Microsoft CARML module library](https://github.com/Azure/ResourceModules)
 
    ```bash
-   git clone https://your-repo-url.git
+   git clone https://github.com/jbpaux/demo-azure-bastion.git
+   git clone https://github.com/Azure/ResourceModules.git
+   cd demo-azure-bastion
    ```
 
 2. Create/Gather exisisting SSH Keys for your Ubuntu VM
@@ -26,12 +28,14 @@ Small project to demonstrate Azure Bastion capbilities
    az group create -n bastion-demo -l westeurope
    ```
 
-4. Deploy the infra (you will be prompt for Windows VM Password, update ssh key files)
+4. Deploy the infra (you will be prompt for VMs username, Windows VM Password, and update ssh key files references)
 
    ```azcli
-   az deployment group create -g bastion-demo --template-file '.\main.bicep' --name bastiondeploy \
-    -p keyData=@".\authorized_key.txt" \
-    -p privateKeyData=@".\ssh-rsa.key"
+   $userID = $(az ad signed-in-user show --query id -o tsv)
+   az deployment group create -g bastion-demo --template-file '.\main.bicep' --name bastiondeploy `
+    -p keyData=@".\authorized_key.txt" `
+    -p privateKeyData=@".\ssh-rsa.key" `
+    -p userID=$userID
    ```
 
 5. If you want you can install nginx in the Ubuntu VM and copy the index.html file to show tunneling capabilities

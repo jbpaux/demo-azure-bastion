@@ -1,5 +1,5 @@
 $resourceGroup = "bastion-demo"
-$bastionName = "bastion-jumpbox"
+$bastionName = "bastion-host"
 
 
 $winVM = "win01"
