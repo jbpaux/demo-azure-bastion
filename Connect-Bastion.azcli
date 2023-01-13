@@ -1,0 +1,27 @@
+$resourceGroup = "bastion-demo"
+$bastionName = "bastion-jumpbox"
+
+
+$winVM = "win01"
+
+$linuxVM = "ubuntu01"
+$linuxVMAdminUsername = "admuser"
+$linuxVMAdminKeyFile = ".\rsa-ssh.key"
+
+# Get Windows VM Id using Azure CLI:
+$winVMId = (az vm show -n $winVM -g $resourceGroup --query id -o tsv)
+
+# Connect to it:
+az network bastion rdp -n $bastionName -g $resourceGroup --target-resource-id $winVMId
+
+
+# Get Linux VM Id using Azure CLI:
+$linuxVMId = (az vm show -n $linuxVM -g $resourceGroup --query id -o tsv)
+
+# Connect to it:
+az network bastion ssh -n $bastionName -g $resourceGroup --target-resource-id $linuxVMId --auth-type "ssh-key" --username $linuxVMAdminUsername --ssh-key $linuxVMAdminKeyFile
+
+# Use tunneling
+az network bastion tunnel -n $bastionName -g $resourceGroup --target-resource-id $linuxVMId --resource-port 22 --port 2222
+
+az network bastion tunnel -n $bastionName -g $resourceGroup --target-resource-id $linuxVMId --resource-port 80 --port 8080
